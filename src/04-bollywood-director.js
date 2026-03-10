@@ -45,13 +45,34 @@
  *   pricer("gold", true)  // => 200 * 1.5 * 1.3 = 390
  */
 export function createDialogueWriter(genre) {
-  // Your code here
+  const dialogues = {
+    action: `${"hero"} says: 'Tujhe toh main dekh lunga, ${"villain"}!'`,
+    romance: `${"hero"} whispers: '${"villain"}, tum mere liye sab kuch ho'`,
+    comedy: `${"hero"} laughs: '${"villain"} bhai, kya kar rahe ho yaar!'`,
+    drama: `${"hero"} cries: '${"villain"}, tune mera sab kuch cheen liya!'`
+  };
+
+  if (!dialogues[genre]) return null;
+
+  return (hero, villain) =>
+    hero && villain
+      ? dialogues[genre]
+          .replace("hero", hero)
+          .replace("villain", villain)
+      : "...";
 }
 
 export function createTicketPricer(basePrice) {
-  // Your code here
+  if ( basePrice <= 0) return null;
+  const seats = { silver: 1, gold: 1.5, platinum: 2, }
+
+  return (seatType, isWeekend = false) =>
+    seats[seatType] ? basePrice * seats[seatType] * (isWeekend && 1.3 || 1) : null;
 }
 
 export function createRatingCalculator(weights) {
-  // Your code here
+  if ( typeof weights !== 'object'|| weights === null ) return null;
+  
+  return (scores) => Object.keys(scores)
+                      .reduce((acc,curr) => acc + (scores[curr] * weights[curr]),0);
 }

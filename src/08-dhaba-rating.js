@@ -45,17 +45,77 @@
  *   // => [{ rating: 5 }, { rating: 3 }]
  */
 export function createFilter(field, operator, value) {
-  // Your code here
+      return function(obj) {
+        let result = false;
+        switch (true) {
+            case operator === ">":
+                result = obj[field] > value;
+                break;
+            case operator === "<":
+                result = obj[field] < value;
+                break;
+            case operator === ">=":
+                result = obj[field] >= value;
+                break;
+            case operator === "<=":
+                result = obj[field] <= value;
+                break;
+            case operator === "===":
+                result = obj[field] === value;
+                break;
+            default:
+                result = false;
+                break;
+        }
+        return result;
+    }
 }
 
 export function createSorter(field, order = "asc") {
-  // Your code here
+        if (order === "asc") {
+        return function(a,b) {
+            if (typeof a[field] === 'number' && typeof b[field] === 'number') {
+                return a[field] - b[field];
+            } else {
+                let x = a[field].toLowerCase();
+                let y = b[field].toLowerCase();
+                if (x < y) {return -1;}
+                if (x > y) {return 1;}
+                return 0;
+            }
+        };
+    }
+
+    if (order === "desc") {
+        return function(a,b) {
+            if (typeof a[field] === 'number' && typeof b[field] === 'number') {
+                return b[field] - a[field];
+            }
+            else {
+                let x = a[field].toLowerCase();
+                let y = b[field].toLowerCase();
+                if (x < y) {return 1;}
+                if (x > y) {return -1;}
+                return 0;
+            }
+        };
+    }
 }
 
 export function createMapper(fields) {
-  // Your code here
+    return function(obj) {
+        let result = {};
+
+        fields.map(field => result[field] = obj[field]);
+
+        return result;
+    }
 }
 
 export function applyOperations(data, ...operations) {
-  // Your code here
+    if (!Array.isArray(data)) return [];
+
+    return operations.reduce((curr,operation) => {
+        return operation(curr);
+    },data);
 }
